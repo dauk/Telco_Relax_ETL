@@ -13,7 +13,7 @@ spark = SparkSession.builder.master("local[1]") \
 
 spark.conf.set(
   "fs.azure.account.key.telcorelaxblob01.blob.core.windows.net",
-  "bMPMkyoIJl4e010AxSrMEjhu6vPhVwltyLAHxRKMwfzBxL5wLwgsR+8ME80tb7UjBuQZ5HF/2PtiP3FCjsb9sw==")
+  "")
 
 data = spark.read.options(inferSchema='True', delimiter=',').csv(prod_data + "*.csv")
 
