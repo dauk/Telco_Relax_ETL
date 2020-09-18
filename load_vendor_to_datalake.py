@@ -61,7 +61,5 @@ data_with_date.repartition("date", "event_type").write.mode("append").partitionB
 
 #data_with_date.repartition("date", "event_type").write.mode("append").partitionBy("date", "event_type").format("csv").save("C:\\Telco Relax\\Output")
 
-#--testas2
-####
-####
 
+#add comments
