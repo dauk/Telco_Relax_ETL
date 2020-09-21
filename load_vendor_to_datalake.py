@@ -1,7 +1,9 @@
-import sys
+import sys, os, shutil
+from datetime import date
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import to_date
 from pyspark.sql.types import StructType, StructField, StringType, IntegerType, TimestampType, DoubleType
+
 
 
 test_data = "C:\\Telco Relax\\Input_test\\"
@@ -12,7 +14,7 @@ spark = SparkSession.builder.master("local[1]") \
     .getOrCreate()
 
 spark.conf.set(
-  "fs.azure.account.key.telcorelaxblob01.blob.core.windows.net",
+  "",
   "")
 
 data = spark.read.options(inferSchema='True', delimiter=',').csv(prod_data + "*.csv")
@@ -54,12 +56,13 @@ data_with_schema = data.withColumnRenamed("_c0", "customer_id").withColumnRename
 #parsin date from event start time so it would be possible to partition by it
 data_with_date = data_with_schema.withColumn("date", to_date("event_start_time", "yyyy-MM-dd"))
 
-
-
-
 data_with_date.repartition("date", "event_type").write.mode("append").partitionBy("date", "event_type").format("parquet").save("wasbs://datalake@telcorelaxblob01.blob.core.windows.net/data")
 
-#data_with_date.repartition("date", "event_type").write.mode("append").partitionBy("date", "event_type").format("csv").save("C:\\Telco Relax\\Output")
+#move loaded file to archive folder
 
+dest = "C:\\Telco Relax\\Archive\\processed_" + date.today().strftime('%Y-%m-%d')
 
-#add comments
+files = os.listdir(prod_data)
+
+for f in files:
+    shutil.move(test_data + f, dest + f)
