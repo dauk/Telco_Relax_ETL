@@ -58,11 +58,11 @@ data_with_date = data_with_schema.withColumn("date", to_date("event_start_time",
 
 data_with_date.repartition("date", "event_type").write.mode("append").partitionBy("date", "event_type").format("parquet").save("wasbs://datalake@telcorelaxblob01.blob.core.windows.net/data")
 
-#move loaded file to archive folder
+# #move loaded file to archive folder
 
 dest = "C:\\Telco Relax\\Archive\\processed_" + date.today().strftime('%Y-%m-%d')
 
 files = os.listdir(prod_data)
 
 for f in files:
-    shutil.move(test_data + f, dest + f)
+    shutil.move(prod_data + f, dest + f)
